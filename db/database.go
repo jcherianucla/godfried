@@ -28,5 +28,14 @@ func (db *DB) StartDB() {
 	}
 	db.store, db.err = sql.Open("postgres", DBInfo)
 	utils.CheckError(db.err)
+}
 
+func (db *DB) CreateTable(table string, record interface{}) {
+	selString := fmt.Sprintf("SELECT * FROM %s", table)
+	_, err = db.store.Exec(selString)
+	if err != nil {
+		inString := utils.Builder.BuildInsertion(record)
+		_, err = db.store.Exec(inString)
+		utils.CheckError(err)
+	}
 }
